@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+FTS=0; cpt l musl-fts && FTS=1
+make LDFLAGS=-static FTS="$FTS"
+make PREFIX=/usr DESTDIR="$1" install

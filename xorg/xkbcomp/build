@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+export LDFLAGS="$LDFLAGS -static"
+export PKG_CONFIG="pkgconf --static"
+
+./configure \
+    --prefix=/usr
+
+make
+make DESTDIR="$1" install

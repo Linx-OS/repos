@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PATH=/usr/bin:/usr/sbin:/sbin:/bin
+
+exec /usr/bin/runsvdir -P /var/service

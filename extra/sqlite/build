@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export CPPFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA=1"
+
+sed 's/ -ltinfo//g' configure > _
+cat _ > configure; rm -f _
+
+./configure \
+    --prefix=/usr \
+    --enable-threadsafe \
+    --enable-dynamic-extensions \
+    --enable-fts5
+
+make
+make DESTDIR="$1" install

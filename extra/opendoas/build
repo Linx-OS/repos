@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --enable-static \
+    --with-timestamp \
+    --without-pam
+
+# Do not change ownership as the package manager handles this.
+sed -i /chown/d GNUmakefile
+
+make
+make DESTDIR="$1" install
+
+install -Dm640  doas.conf "$1/etc/doas.conf"

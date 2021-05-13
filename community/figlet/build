@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+sed -i '/DECLS/d' utf8.h
+
+mk() {
+    make \
+        prefix=/usr \
+        LDFLAGS="$LDFLAGS -static" \
+        MANDIR=/usr/share/man \
+        "$@"
+}
+
+mk
+mk DESTDIR="$1" install

@@ -1,0 +1,3 @@
+#!/bin/sh
+! [ -e /etc/crontab ] && printf "-> /etc/crontab not found\\n" && exit 1
+exec crond -n >>/var/log/cron 2>&1

@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -static-libgcc"
+export CXXFLAGS="$CXXFLAGS -static-libstdc++ -static-libgcc"
+export DESTDIR="$1"
+
+cmake source \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release
+
+cmake --build .
+cmake --install .

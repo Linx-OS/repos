@@ -1,0 +1,44 @@
+#!/bin/sh -e
+
+export BUILD_ZLIB=0
+export BUILD_BZIP2=0
+export LDFLAGS="$LDFLAGS -pthread"
+export CFLAGS="$CFLAGS -DNO_POSIX_2008_LOCALE -D_GNU_SOURCE"
+
+./Configure \
+    -des \
+    -Dprefix=/usr \
+    -Dvendorprefix=/usr \
+    -Dusevendorprefix \
+    -Duseshrplib \
+    -Dusesoname \
+    -Dusethreads \
+    -Dinc_version_list=none \
+    -Dd_sockaddr_in6=define \
+    -Dcccdlflags=-fPIC \
+    -Dccflags="$CFLAGS" \
+    -Dlddlflags="-shared $LDFLAGS" \
+    -Dldflags="$LDFLAGS" \
+    -Doptimize="-Wall $CFLAGS" \
+    -Dcc="${CC:-gcc}" \
+    -Dar="${AR:-ar}" \
+    -Dnm="${NM:-nm}" \
+    -Dranlib="${RANLIB:-ranlib}" \
+ 	-Dperl_static_inline="static __inline__" \
+    -Dd_static_inline
+
+make
+make DESTDIR="$1" install
+
+# Remove all unneeded files.
+find "$1" \( \
+    -name '*.pod'   -o \
+    -name .packlist -o \
+    -name README\*  -o \
+    -name TODO\*    -o \
+    -name Change\*  -o \
+    -name \*.bs     -o \
+    -name \*.0 \) -type f -exec rm -f -- {} +
+
+# Fix permissions.
+find "$1/usr/lib" -type f -exec chmod 644 {} \;

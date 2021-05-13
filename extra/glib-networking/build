@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+# The new version requires openssl TLS1.3, which libressl hasn't fully
+# implemented yet. We now need gnutls, sadly.
+meson \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    -Dlibproxy=disabled \
+    -Dgnutls=enabled \
+    . output
+
+ninja -C output
+ninja -C output install

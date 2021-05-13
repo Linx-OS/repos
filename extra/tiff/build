@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --enable-cxx \
+    --disable-webp \
+    --without-x
+
+make
+make DESTDIR="$1" install

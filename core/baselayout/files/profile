@@ -1,0 +1,17 @@
+#
+# /etc/profile
+#
+
+PATH=/usr/bin
+MANPATH=/usr/share/man
+export PATH MANPATH
+
+umask 022
+
+# Load profiles from /etc/profile.d
+if [ -d /etc/profile.d/ ]; then
+	for file in /etc/profile.d/*.sh; do
+	    [ -r "$file" ] && . "$file"
+	done
+	unset file
+fi

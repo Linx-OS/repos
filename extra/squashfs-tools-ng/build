@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+autoreconf -fi
+
+export PKG_CONFIG="pkgconf --static"
+
+./configure \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --without-xz \
+    --disable-shared
+
+make CCLD="${CC:-cc} --static"
+make DESTDIR="$1" install

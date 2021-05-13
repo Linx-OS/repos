@@ -1,0 +1,8 @@
+[1mIMPORTANT:[m
+
+  In order to enable sysmgr you need to uncomment the line on
+  '/etc/init/sysmgr.boot'.
+
+  You can do this [1mas root[m by doing,
+      [1msed -i 's/# //' /etc/init/sysmgr.boot /etc/init/sysmgr.pre.shutdown[m
+

@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -static-libgcc"
+export CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
+export PKG_CONFIG="pkgconf --static"
+
+./configure \
+    --prefix=/usr \
+    --disable-nls \
+    --disable-metalink \
+    --disable-websocket \
+    --without-libxml2 \
+    --without-libexpat \
+    --without-sqlite3
+
+make LDFLAGS="$LDFLAGS -all-static"
+make DESTDIR="$1" install

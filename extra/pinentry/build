@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --enable-fallback-curses \
+    --enable-pinentry-tty \
+    --enable-pinentry-curses
+
+make
+make DESTDIR="$1" install

@@ -1,0 +1,4 @@
+autoconf make
+automake make
+pkgconf  make
+zlib     make

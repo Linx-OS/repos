@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+grep -q '^mlocate:' /etc/group || addgroup -S mlocate

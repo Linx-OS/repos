@@ -1,0 +1,10 @@
+[1;36mNOTE[m
+
+  Keymaps are copied to [1;4m/usr/share/bkeymaps[m.
+
+  You should pipe the keymaps to loadkmap in
+  order to load them
+
+[1;36mEXAMPLE[m
+
+    loadkmap < /usr/share/bkeymaps/us/us.bmap

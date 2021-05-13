@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+# Remove 'libelf' dependency.
+sed 's/if have_libelf/if not have_libelf/' gio/meson.build > _
+cat _ > gio/meson.build; rm -f _
+
+# tests/fuzzing now depend on dbus. Remove them from the build.
+find . -type f -name meson.build -exec \
+    sed -i "/subdir('tests')/d;/subdir('fuzzing')/d" {} +
+
+meson \
+    --prefix=/usr \
+    -Ddefault_library=both \
+    -Dman=false \
+    -Dfam=false \
+    . build
+
+ninja -C build
+ninja -C build install
+
+# Purge gdbus.
+rm -rf "$1/usr/bin/gdbus"

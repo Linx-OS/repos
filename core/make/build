@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+export LDFLAGS="$LDFLAGS -static"
+
+./configure \
+    --prefix=/usr \
+    --disable-nls \
+    --without-guile \
+    "$(cpt l --check make -- '' --disable-dependency-tracking)"
+
+if command -v make >/dev/null; then
+    make
+else
+    ./build.sh
+    PATH=$PWD:$PATH
+fi
+make DESTDIR="$1" install

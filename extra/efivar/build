@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+export LDFLAGS="$LDFLAGS -static"
+
+for patch in *.patch; do
+    patch -p1 < "$patch"
+done
+
+mk() {
+    make \
+        libdir=/usr/lib/ \
+        bindir=/usr/bin/ \
+        mandir=/usr/share/man/ \
+        includedir=/usr/include/ \
+        "$@"
+}
+
+(
+    cd src
+
+    # Build static targets.
+    mk libefiboot.a libefivar.a efivar-static efiboot.pc efivar.pc
+
+    # Install the binary.
+    install -Dm755 efivar-static "$1/usr/bin/efivar"
+    
+    # Install libraries.
+    install -Dm644 libefiboot.a  "$1/usr/lib/libefiboot.a"
+    install -Dm644 libefivar.a   "$1/usr/lib/libefivar.a"
+    
+    # Install pkgconf files.
+    install -Dm644 efiboot.pc    "$1/usr/lib/pkgconfig/efiboot.pc"
+    install -Dm644 efivar.pc     "$1/usr/lib/pkgconfig/efivar.pc"
+    
+    # Install headers.
+    find include -type f | while read -r header; do
+        install -Dm644 "$header" "$1/usr/$header"
+    done
+)
+
+
+mk -C docs DESTDIR="$1" install

@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -fPIC"
+export LDFLAGS="$LDFLAGS -static"
+
+./configure \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --sysconfdir=/etc \
+    --rundir=/run \
+    --without-udev
+
+make
+make DESTDIR="$1" install
+
+# Install runit service.
+install -Dm755 dhcpcd.run "$1/etc/sv/dhcpcd/run"
+ln -s /run/runit/supervise.dhcpcd "$1/etc/sv/dhcpcd/supervise"
+
+# Install runit service.
+install -Dm755 dhcpcd.run "$1/etc/sysmgr/dhcpcd"

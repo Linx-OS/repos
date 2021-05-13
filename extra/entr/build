@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+./configure
+cp Makefile.linux Makefile
+make LDFLAGS="$LDFLAGS -static"
+make DESTDIR="$1" PREFIX=/usr install

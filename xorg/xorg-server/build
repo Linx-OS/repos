@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+patch -p1 < rootless_modesetting.patch
+
+
+(
+    # Instead of requiring libressl for the sha1 library, we
+    # are statically installing this small implementation so
+    # that we don't require an external library.
+    cd libsha1
+
+    ./configure \
+        --prefix=/usr \
+        --disable-shared
+
+    make
+    make DESTDIR="$PWD/tmp" install
+)
+
+export LDFLAGS="$LDFLAGS -L$PWD/libsha1/tmp/usr/lib"
+export CFLAGS="$CFLAGS -I$PWD/libsha1/tmp/usr/include"
+export LIBSHA1_CFLAGS="-L$PWD/libsha1/tmp/usr/lib -I$PWD/libsha1/tmp/usr/include"
+export LIBSHA1_LIBS="$PWD/libsha1/tmp/usr/lib/libsha1.a"
+
+./configure \
+    --prefix=/usr \
+    --localstatedir=/var \
+    --disable-shared \
+    --disable-systemd-logind \
+    --disable-unit-tests \
+    --enable-glx \
+    --enable-dri \
+    --enable-dri2 \
+    --enable-dri3 \
+    --enable-glamor \
+    --enable-xorg \
+    --with-sha1=libsha1 \
+    --with-systemd-daemon=off
+
+make
+make DESTDIR="$1" install
+
+rm -f "$1/usr/share/X11/xorg.conf.d/10-evdev.conf"

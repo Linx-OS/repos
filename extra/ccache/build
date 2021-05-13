@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+export DESTDIR=$1
+export LDFLAGS="$LDFLAGS -static"
+
+TEST=OFF
+[ "$CPT_TEST" ] && TEST=ON
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DENABLE_TESTING=$TEST \
+    -DZSTD_LIBRARY=/usr/lib/libzstd.a
+
+cmake --build   build
+cmake --install build
+
+mkdir -p "$1/usr/lib/ccache/bin"
+triplet=$(cc -dumpmachine)
+
+for link in cc gcc g++ cpp c++ "$triplet-cc" "$triplet-gcc" \
+            "$triplet-g++" "$triplet-cpp" "$triplet-c++"; do
+    ln -sf /usr/bin/ccache "$1/usr/lib/ccache/bin/$link"
+done

@@ -1,0 +1,45 @@
+#!/bin/sh -e
+
+cat > config.mak <<EOF
+NO_GETTEXT=YesPlease
+NO_SVN_TESTS=YesPlease
+NO_TCLTK=YesPlease
+NO_EXPAT=YesPlease
+NO_NSEC=YesPlease
+NO_PYTHON=YesPlease
+NO_SYS_POLL_H=1
+NO_CROSS_DIRECTORY_HARDLINKS=1
+NO_INSTALL_HARDLINKS=1
+EOF
+
+export LDFLAGS="$LDFLAGS -static"
+
+./configure \
+    --prefix=/usr \
+    --with-curl \
+    ac_cv_snprintf_returns_bogus=no \
+    ac_cv_fread_reads_directories=yes
+
+make
+make DESTDIR="$1" install
+
+for man in man1/*.1 man5/*.5 man7/*.7; do
+    install -Dm644 "$man" "$1/usr/share/man/$man"
+done
+
+
+# Build and install remote-http helper. This doesn't happen by default when
+# building static git.
+set -x
+export CFLAGS="$CFLAGS -D_XOPEN_SOURCE=600 -I$PWD -I$PWD/compat/regex -I$PWD/xdiff -include config.h"
+for obj in http http-walker; do
+    # shellcheck disable=2086
+    "${CC:=cc}" $CFLAGS -c "$obj.c"
+done
+
+# shellcheck disable=2086,2046
+"$CC" $LDFLAGS $CFLAGS -o "$1/usr/libexec/git-core/git-remote-http" remote-curl.c http.o http-walker.o libgit.a common-main.o xdiff/lib.a $(pkg-config --static --libs zlib libcurl)
+
+for remote in https ftp ftps; do
+    ln -sf git-remote-http "$1/usr/libexec/git-core/git-remote-$remote"
+done

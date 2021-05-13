@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+export LDFLAGS="$LDFLAGS -static"
+
+./configure \
+	--prefix=/usr \
+	--with-msmtpd \
+	--with-tls=openssl
+
+make
+make DESTDIR="$1" install

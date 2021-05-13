@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export CC="${CC:-cc} --static"
+
+./configure \
+    --prefix=/usr \
+    --disable-vlock \
+    --disable-nls \
+    --enable-shared=no \
+    --disable-tests
+
+find . -name Makefile -exec sed -i 's/gunzip/gzip -d/' {} \;
+
+make
+make DESTDIR="$1" install
