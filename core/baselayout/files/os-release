@@ -1,6 +1,6 @@
-NAME="Carbs Linux"
-PRETTY_NAME="Carbs Linux"
+NAME="Linx Linux"
+PRETTY_NAME="Linx Linux"
 ID=carbs
 BUILD_ID=rolling
-HOME_URL="https://carbslinux.org"
-DOCUMENTATION_URL="https://carbslinux.org"
+HOME_URL="https://git.sr.ht/~linx/"
+DOCUMENTATION_URL="https://git.sr.ht/~linx/"

@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Carbs Linux service installer
+# Linx Linux service installer
 
 usage() {
     printf '%s\n' \
