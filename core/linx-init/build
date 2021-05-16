@@ -1,5 +1,3 @@
 #!/bin/sh -e
 
-patch -p1 < respawn-fix.patch
-
 make DESTDIR="$1" install
